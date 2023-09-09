@@ -16,7 +16,6 @@ def main():
         try:
             with open(parsed_args.script) as f:
                 while line := f.readline():
-                    print(f'line "{line.strip()}"')
                     vshell.execute_command(line.strip())
         except FileNotFoundError:
             print(f"Ошибка: файл {parsed_args.script} не существует")
