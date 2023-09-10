@@ -28,5 +28,14 @@ bytes = byte | byte bytes
 byte = 0 | 1
 '''
 
+BNF_TASK4 = '''
+E = brackets
+brackets = curly_brackets | parentheses
+curly_brackets = { brackets } | {}
+parentheses = ( brackets ) | ()
+'''
+
+BNF = BNF_TASK4
+
 for i in range(10):
     print(generate_phrase(parse_bnf(BNF), 'E'))
