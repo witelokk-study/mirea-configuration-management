@@ -1,0 +1,4 @@
+digraph {
+    matplotlib -> {contourpy cycler fonttools kiwisolver numpy packaging
+    pillow pyparsing "python-dateutil"}
+}

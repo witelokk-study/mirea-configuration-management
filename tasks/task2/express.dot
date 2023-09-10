@@ -1,0 +1,34 @@
+digraph {
+    express -> {
+        accepts
+        "array-flatten"
+        "body-parser"
+        "content-disposition"
+        "content-type"
+        cookie
+        "cookie-signature"
+        debug
+        depd
+        encodeurl
+        "escape-html"
+        etag
+        finalhandler
+        fresh
+        "http-errors"
+        "merge-descriptors"
+        methods
+        "on-finished"
+        parseurl
+        "path-to-regexp"
+        "proxy-addr"
+        qs
+        "range-parser"
+        "safe-buffer"
+        send
+        "serve-static"
+        setprototypeof
+        statuses
+        "type-is"
+        "utils-merge"
+    }
+}
