@@ -1,0 +1,54 @@
+# This workflow will install Python dependencies, run tests and lint with a single version of Python
+# For more information see: https://docs.github.com/en/actions/automating-builds-and-tests/building-and-testing-python
+
+name: Report generator
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v3
+    - name: Set up Python 3.11
+      uses: actions/setup-python@v3
+      with:
+        python-version: "3.11"
+    - name: Cache fonts
+      uses: actions/cache@v3
+      with:
+        path: |
+          /usr/share/fonts
+    - name: Install dependencies
+      run: |
+        fc-cache
+        if fc-list | grep "Times New Roman" -q; then
+          :
+        else
+          echo ttf-mscorefonts-installer msttcorefonts/accepted-mscorefonts-eula select true | sudo debconf-set-selections;
+          sudo apt-get install ttf-mscorefonts-installer;
+        fi
+        python -m pip install --upgrade pip
+        python -m venv venv
+        source venv/bin/activate
+        pip install git+https://github.com/witelokk/md2gost.git@dev
+    - name: Run
+      run: |
+        source venv/bin/activate
+        cd dz
+        for dir in $(ls); do
+          md2gost $dir/$dir.md -T $dir/title.docx --syntax-highlighting;
+        done
+    - uses: actions/upload-artifact@v3
+      with:
+        name: reports
+        path: dz/*.docx
