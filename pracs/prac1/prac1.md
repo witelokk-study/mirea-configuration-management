@@ -114,32 +114,23 @@ systemd-journal-upload
 
 %banner Код скрипта banner
 
-```bash
-TEXT=$1;
-
-TEXT_LENGTH=$(expr length "$1");
-
-function print_border {
-    printf "+";
-    for ((i=1;i<=$TEXT_LENGTH+2;i++));
-    do
-        printf "-"
-    done;
-    printf "+\n"
-}
-
-print_border;
-echo "| $TEXT |";
-print_border;
+```bash bannner.sh
 ```
 
 ## Задание 4
-Скип
+Задание: Написать программу для вывода всех идентификаторов (по правилам C/C++ или Java) в файле (без повторений).
+
+Пример для hello.c: h hello include int main n printf return stdio void world.
+
+```bash task4.sh
+```
 
 ## Задание 5
-```
-chmod +x "$1";
-mv "$1" /usr/local/bin
+Задание: Написать программу для регистрации пользовательской команды (правильные права доступа и копирование в /usr/local/bin).
+
+Например, пусть программа называется reg. В результате для banner задаются правильные права доступа и сам banner копируется в /usr/local/bin.
+
+```banner.sh
 ```
 
 ## Задание 6
@@ -149,22 +140,15 @@ mv "$1" /usr/local/bin
 
 %task6 Код программы для задания 6.
 
-```bash
-FIRST_LINE=$(cat $1 | head -n 1)
-
-if { [[ $1 == *".py" ]] && $(echo $FIRST_LINE | grep -q "^ *#"); } \
-|| { [[ $1 == *".c" ]] && $(echo $FIRST_LINE | grep -q -e "//.\+" -e "/*.\+\*/"); } \
-|| { [[ $1 == *".js" ]] && $(echo $FIRST_LINE | grep -q -e "//.\+"); }; then
-    echo "comment found";
-else
-    echo "comment not found"
-fi
+```bash task6.sh
 ```
-
 ## Задание 7
 Задание: написать программу для нахождения файлов-дубликатов (имеющих 1 или более копий содержимого) по заданному пути (и подкаталогам).
 
-Скип
+%task7 Код программы для задания 7.
+
+```bash task7.sh
+```
 
 ## Задание 8
 Задание: написать программу, которая находит все файлы в данном каталоге с расширением, указанным в качестве аргумента и архивирует все эти файлы в архив tar.
@@ -173,8 +157,7 @@ fi
 
 %task8 Код программы для задания 8.
 
-```bash
-tar -czf archive.tar *."$1"
+```bash task8.sh
 ```
 
 ## Задание 9
@@ -184,8 +167,7 @@ tar -czf archive.tar *."$1"
 
 %task9 Код программы для задания 9.
 
-```bash
-sed 's/    /\t/g' $1 > $2
+```bash task9.sh
 ```
 
 ## Задание 10
@@ -195,6 +177,5 @@ sed 's/    /\t/g' $1 > $2
 
 %task10 Код программы для задания 10.
 
-```bash
-find . -type f
+```task10.sh
 ```
