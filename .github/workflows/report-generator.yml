@@ -48,7 +48,11 @@ jobs:
         for dir in $(ls); do
           md2gost $dir/$dir.md -T $dir/title.docx --syntax-highlighting;
         done
+        cd ../pracs
+        for dir in $(ls); do
+          md2gost $dir/$dir.md -T $dir/title.docx --syntax-highlighting;
+        done
     - uses: actions/upload-artifact@v3
       with:
         name: reports
-        path: dz/*.docx
+        path: dz/*.docx pracs/*.docx
