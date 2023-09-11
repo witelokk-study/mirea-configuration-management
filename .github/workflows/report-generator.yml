@@ -56,5 +56,5 @@ jobs:
       with:
         name: reports
         path: |
-        dz/*.docx
-        pracs/*.docx
+          dz/*.docx
+          pracs/*.docx
