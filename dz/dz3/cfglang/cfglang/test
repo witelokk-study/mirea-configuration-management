@@ -1,0 +1,29 @@
+("people"
+    (
+        ("name" "Alice")
+        ("age" 30)
+        ("adress"
+            ("street" "A")
+            ("city" "B")
+            ("zip" "C"))
+        ("gender" "female")
+    )
+    (
+        ("name" "John")
+        ("age" 20)
+        ("adress"
+            ("street" "D")
+            ("city" "E")
+            ("zip" "F"))
+        ("gender" "male")
+    )
+)
+
+("ship" ("registry"    1701)
+      ("x"             42)
+      ("y"             13))
+
+("users"
+  (("uid" 1)   ("name" "root") ("gid" 1))
+  (("uid" 108) ("name" "matt") ("gid" 108))
+  (("uid" 109) ("name" "ralf") ("gid" 109)))

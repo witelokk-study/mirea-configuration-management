@@ -22,4 +22,7 @@ class LangLexer(Lexer):
         t.value = float(t.value)
         return t
 
-    BOOL = r"true|false"
+    @_(r"true|false")
+    def BOOL(self, t):
+        t.value = True if t.value == "true" else False
+        return t
