@@ -64,6 +64,6 @@ class LangParser(Parser):
     def data(self, p):
         return P.BOOL
 
-    # @_("'.'")
-    # def data(self, p):
-    #     return None
+    @_("'.'")
+    def data(self, p):
+        return None

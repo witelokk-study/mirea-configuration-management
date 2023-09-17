@@ -1,0 +1,16 @@
+[tool.poetry]
+name = "sandboxer"
+version = "0.1.0"
+description = ""
+authors = ["witelokk <witelokk@gmail.com>"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.11"
+py7zr = "^0.20.6"
+pycdlib = "^1.14.0"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"

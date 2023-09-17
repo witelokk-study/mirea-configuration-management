@@ -1,0 +1,229 @@
+Index: ../../../../pracs/prac1/prac1.md
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+># *СОДЕРЖАНИЕ\n[TOC]\n\n# Задания с доски\n## Задание 1\nЗадание: сделать файл и папку.\n\n- Создадим файл `file1` при помощи команды `touch`. \n- Создадим папку `folder1` при помощи команды `mkdir`.\n\n```bash\ntouch file1\nmkdir folder1\n```\n\n## Задание 2\nЗадание: переместить 1 в 2.\n\n```bash\nmv file1 folder1\n```\n\n## Задание 3\nЗадание: изменить содержание файла и вывести его с дир. root.\n\n```bash\ncd ..\ncat folder1/file1\n```\n\n## Задание 4\nЗадание: написать и запустить скрипт на вывод сообщения \"РТУ МИРЭА\".\n```bash\necho \"РТУ МИРЭА\"\n```\n\nЗапустим скрипт: `sh script.sh`.\n\nВывод: ```РТУ МИРЭА```\n\n## Скриншот\nРезультат выполнения задний 1-4 показан на рис. @tasks1to4\n\n![](tasks1to4.png \"%tasks1to4 Скриншот\")\n\n# Практическое занятие №1. Введение, основы работы в командной строке\nВыполним задания из https://github.com/true-grue/kisscm/blob/main/pract/pract1.md.\n\n## Задание 1\nЗадание: вывести отсортированный в алфавитном порядке список имен пользователей в файле passwd (вам понадобится grep).\n\nВыполним команду `grep -o \"^[^:]*\" /etc/passwd`. Параметр `-o` означает что будет осуществлен вывод только найденных частей. `^` в начале паттерна означает начало строки. `[^:]*` означает любой символ кроме `:`. `*` означает, что предыдущий параметр повторяется 0 или более раз.\n\nВывод представлен в листинге @etcpasswd.\n\n%etcpasswd Вывод пользователей из файла /etc/passwd.\n\n```\nroot\nbin\ndaemon\nmail\nftp\nhttp\nnobody\ndbus\nsystemd-coredump\nsystemd-network\nsystemd-oom\nsystemd-journal-remote\nsystemd-resolve\nsystemd-timesync\ntss\nuuidd\nroman\navahi\ngdm\ngeoclue\npolkitd\nrtkit\nusbmux\ncolord\ngit\nnm-openvpn\nopenvpn\nsaned\ncups\nplex\nsystemd-journal-upload\n```\n\n## Задание 2\nЗадание: вывести данные /etc/protocols в отформатированном и отсортированном порядке для 5 наибольших портов.\n\nВыполним команду ```cat /etc/protocols | grep \"^.\\+ \\+[0-9]\\+ \\+.\\+\" | awk '{print $2\" \"$3}' | sort -n -r | head -n 5```. `cat` обозначает вывод файла. `grep` выводит только строки подходящие под паттерн: \nодин или более любых символов, один или несколько пробелов, одна или более цифр, один или несколько пробелов, один или более любых символов. `awk` выводит вторую и третью части строки, разделенные пробелом. `sort` сортирует строки в обратном порядке (`-r`), учитывая цифры (`-n`). `head` выводит первые пять (`-n 5`) строк.\n\nВывод представлен в листинге @etcprotocols.\n\n%etcprotocols Вывод отформатированных и отсортированных данных из /etc/protcols.\n\n```\n255 Reserved\n145 NSH\n144 AGGFRAG\n143 Ethernet\n142 ROHC\n```\n\n## Задание 3\nЗадание: написать программу banner средствами bash для вывода текстов, как в следующем примере (размер баннера должен меняться!).\n\nКод скрипта представлен в листинге @banner. В первой строке инициализируется переменная `TEXT` со значением первого аргумента программы. Далее при помощи `expr length` подсчитывается количество символов в `TEXT`. Затем объявляется функция print_border, которая выводит плюс, `TEXT_LENGTH+2` минусов и плюс. Далее вызывается функция print_boder, выводится `$TEXT`, еще раз вызывается функция print_boder. \n\n%banner Код скрипта banner\n\n```bash bannner.sh\n```\n\n## Задание 4\nЗадание: Написать программу для вывода всех идентификаторов (по правилам C/C++ или Java) в файле (без повторений).\n\nПример для hello.c: h hello include int main n printf return stdio void world.\n\n```bash task4.sh\n```\n\n## Задание 5\nЗадание: Написать программу для регистрации пользовательской команды (правильные права доступа и копирование в /usr/local/bin).\n\nНапример, пусть программа называется reg. В результате для banner задаются правильные права доступа и сам banner копируется в /usr/local/bin.\n\n```banner.sh\n```\n\n## Задание 6\nЗадание: написать программу для проверки наличия комментария в первой строке файлов с расширением c, js и py.\n\nКод программы предоставлен в листинге @task6.\n\n%task6 Код программы для задания 6.\n\n```bash task6.sh\n```\n## Задание 7\nЗадание: написать программу для нахождения файлов-дубликатов (имеющих 1 или более копий содержимого) по заданному пути (и подкаталогам).\n\n%task7 Код программы для задания 7.\n\n```bash task7.sh\n```\n\n## Задание 8\nЗадание: написать программу, которая находит все файлы в данном каталоге с расширением, указанным в качестве аргумента и архивирует все эти файлы в архив tar.\n\nКод программы предоставлен в листинге @task8.\n\n%task8 Код программы для задания 8.\n\n```bash task8.sh\n```\n\n## Задание 9\nЗадание: написать программу, которая заменяет в файле последовательности из 4 пробелов на символ табуляции. Входной и выходной файлы задаются аргументами.\n\nКод программы предоставлен в листинге @task9.\n\n%task9 Код программы для задания 9.\n\n```bash task9.sh\n```\n\n## Задание 10\nЗадание: написать программу, которая выводит названия всех пустых текстовых файлов в указанной директории. Директория передается в программу параметром.\n\nКод программы предоставлен в листинге @task10.\n\n%task10 Код программы для задания 10.\n\n```task10.sh\n```\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/../../../../pracs/prac1/prac1.md b/../../../../pracs/prac1/prac1.md
+--- a/../../../../pracs/prac1/prac1.md	(revision 406107d245365943bb3e5a5f81c77dcd0881d317)
++++ b/../../../../pracs/prac1/prac1.md	(date 1694444710096)
+@@ -92,7 +92,7 @@
+ ## Задание 2
+ Задание: вывести данные /etc/protocols в отформатированном и отсортированном порядке для 5 наибольших портов.
+ 
+-Выполним команду ```cat /etc/protocols | grep "^.\+ \+[0-9]\+ \+.\+" | awk '{print $2" "$3}' | sort -n -r | head -n 5```. `cat` обозначает вывод файла. `grep` выводит только строки подходящие под паттерн: 
++Выполним команду ```cat /etc/protocols | grep "^[^# ].+ | awk '{print $2" "$3}' | sort -n -r | head -n 5```. `cat` обозначает вывод файла. `grep` выводит только строки подходящие под паттерн: 
+ один или более любых символов, один или несколько пробелов, одна или более цифр, один или несколько пробелов, один или более любых символов. `awk` выводит вторую и третью части строки, разделенные пробелом. `sort` сортирует строки в обратном порядке (`-r`), учитывая цифры (`-n`). `head` выводит первые пять (`-n 5`) строк.
+ 
+ Вывод представлен в листинге @etcprotocols.
+@@ -114,7 +114,7 @@
+ 
+ %banner Код скрипта banner
+ 
+-```bash bannner.sh
++```bash banner.sh
+ ```
+ 
+ ## Задание 4
+@@ -130,7 +130,7 @@
+ 
+ Например, пусть программа называется reg. В результате для banner задаются правильные права доступа и сам banner копируется в /usr/local/bin.
+ 
+-```banner.sh
++```bash reg.sh
+ ```
+ 
+ ## Задание 6
+@@ -177,5 +177,5 @@
+ 
+ %task10 Код программы для задания 10.
+ 
+-```task10.sh
++```bash task10.sh
+ ```
+Index: ../../../../pracs/prac3/someprog.py
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>import random\n\n\ndef parse_bnf(text):\n    '''\n    Преобразовать текстовую запись БНФ в словарь.\n    '''\n    grammar = {}\n    rules = [line.split('=') for line in text.strip().split('\\n')]\n    for name, body in rules:\n        grammar[name.strip()] = [alt.split() for alt in body.split('|')]\n    return grammar\n\n\ndef generate_phrase(grammar, start):\n    '''\n    Сгенерировать случайную фразу.\n    '''\n    if start in grammar:\n        seq = random.choice(grammar[start])\n        return ''.join([generate_phrase(grammar, name) for name in seq])\n    return str(start)\n\n\nBNF_TASK3 = '''\nE = bytes\nbytes = byte | byte bytes\nbyte = 0 | 1\n'''\n\nBNF_TASK4 = '''\nE = brackets\nbrackets = curly_brackets | parentheses\ncurly_brackets = { brackets } | {}\nparentheses = ( brackets ) | ()\n'''\n\nBNF = BNF_TASK4\n\nfor i in range(10):\n    print(generate_phrase(parse_bnf(BNF), 'E'))\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/../../../../pracs/prac3/someprog.py b/../../../../pracs/prac3/someprog.py
+--- a/../../../../pracs/prac3/someprog.py	(revision 406107d245365943bb3e5a5f81c77dcd0881d317)
++++ b/../../../../pracs/prac3/someprog.py	(date 1694701242666)
+@@ -35,7 +35,24 @@
+ parentheses = ( brackets ) | ()
+ '''
+ 
+-BNF = BNF_TASK4
++BNF_TASK5 = '''
++E = eqs
++eq = var | ~ var | ~ ( eq ) | ( eq bin_op eq )
++var = x | y | ( var )
++bin_op = ∨ | &
++eqs = eq | eqs
++'''
++
++BNF_DZ = '''
++E = S_EXP_LIST
++S_EXP = DATA | ( S_EXP_LIST )
++S_EXP_LIST = S_EXP S_EXP_LIST |
++DATA = STRING | INT | 
++STRING = A | B | C
++INT = 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9
++'''
++
++BNF = BNF_DZ
+ 
+ for i in range(10):
+     print(generate_phrase(parse_bnf(BNF), 'E'))
+Index: ../../../../pracs/prac2/happy_tickets.mzn
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>include \"alldifferent.mzn\";\n\nvar 0..9: A;\nvar 0..9: B;\nvar 0..9: C;\nvar 0..9: D;\nvar 0..9: E;\nvar 0..9: F;\n\nconstraint alldifferent([A,B,C,D,E,F]);\n\nconstraint A+B+C = D+E+F;\n\nsolve satisfy;
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/../../../../pracs/prac2/happy_tickets.mzn b/../../../../pracs/prac2/happy_tickets.mzn
+--- a/../../../../pracs/prac2/happy_tickets.mzn	(revision 406107d245365943bb3e5a5f81c77dcd0881d317)
++++ b/../../../../pracs/prac2/happy_tickets.mzn	(date 1694439282616)
+@@ -11,4 +11,4 @@
+ 
+ constraint A+B+C = D+E+F;
+ 
+-solve satisfy;
+\ No newline at end of file
++solve satisfy;  
+\ No newline at end of file
+Index: .idea/.gitignore
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/.idea/.gitignore b/.idea/.gitignore
+new file mode 100644
+--- /dev/null	(date 1694713443639)
++++ b/.idea/.gitignore	(date 1694713443639)
+@@ -0,0 +1,8 @@
++# Default ignored files
++/shelf/
++/workspace.xml
++# Editor-based HTTP Client requests
++/httpRequests/
++# Datasource local storage ignored files
++/dataSources/
++/dataSources.local.xml
+Index: .idea/inspectionProfiles/Project_Default.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/.idea/inspectionProfiles/Project_Default.xml b/.idea/inspectionProfiles/Project_Default.xml
+new file mode 100644
+--- /dev/null	(date 1694713453139)
++++ b/.idea/inspectionProfiles/Project_Default.xml	(date 1694713453139)
+@@ -0,0 +1,15 @@
++<component name="InspectionProjectProfileManager">
++  <profile version="1.0">
++    <option name="myName" value="Project Default" />
++    <inspection_tool class="PyPackageRequirementsInspection" enabled="true" level="WARNING" enabled_by_default="true">
++      <option name="ignoredPackages">
++        <value>
++          <list size="2">
++            <item index="0" class="java.lang.String" itemvalue="requests" />
++            <item index="1" class="java.lang.String" itemvalue="docx" />
++          </list>
++        </value>
++      </option>
++    </inspection_tool>
++  </profile>
++</component>
+\ No newline at end of file
+Index: .idea/cfglang.iml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/.idea/cfglang.iml b/.idea/cfglang.iml
+new file mode 100644
+--- /dev/null	(date 1694714280123)
++++ b/.idea/cfglang.iml	(date 1694714280123)
+@@ -0,0 +1,8 @@
++<?xml version="1.0" encoding="UTF-8"?>
++<module type="PYTHON_MODULE" version="4">
++  <component name="NewModuleRootManager">
++    <content url="file://$MODULE_DIR$" />
++    <orderEntry type="jdk" jdkName="Python 3.11 (venv)" jdkType="Python SDK" />
++    <orderEntry type="sourceFolder" forTests="false" />
++  </component>
++</module>
+\ No newline at end of file
+Index: .idea/modules.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/.idea/modules.xml b/.idea/modules.xml
+new file mode 100644
+--- /dev/null	(date 1694713453209)
++++ b/.idea/modules.xml	(date 1694713453209)
+@@ -0,0 +1,8 @@
++<?xml version="1.0" encoding="UTF-8"?>
++<project version="4">
++  <component name="ProjectModuleManager">
++    <modules>
++      <module fileurl="file://$PROJECT_DIR$/.idea/cfglang.iml" filepath="$PROJECT_DIR$/.idea/cfglang.iml" />
++    </modules>
++  </component>
++</project>
+\ No newline at end of file
+Index: .idea/misc.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/.idea/misc.xml b/.idea/misc.xml
+new file mode 100644
+--- /dev/null	(date 1694714280129)
++++ b/.idea/misc.xml	(date 1694714280129)
+@@ -0,0 +1,4 @@
++<?xml version="1.0" encoding="UTF-8"?>
++<project version="4">
++  <component name="ProjectRootManager" version="2" project-jdk-name="Python 3.11 (venv)" project-jdk-type="Python SDK" />
++</project>
+\ No newline at end of file
+Index: .idea/inspectionProfiles/profiles_settings.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/.idea/inspectionProfiles/profiles_settings.xml b/.idea/inspectionProfiles/profiles_settings.xml
+new file mode 100644
+--- /dev/null	(date 1694713453246)
++++ b/.idea/inspectionProfiles/profiles_settings.xml	(date 1694713453246)
+@@ -0,0 +1,6 @@
++<component name="InspectionProjectProfileManager">
++  <settings>
++    <option name="USE_PROJECT_PROFILE" value="false" />
++    <version value="1.0" />
++  </settings>
++</component>
+\ No newline at end of file
+Index: .idea/vcs.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/.idea/vcs.xml b/.idea/vcs.xml
+new file mode 100644
+--- /dev/null	(date 1694713453259)
++++ b/.idea/vcs.xml	(date 1694713453259)
+@@ -0,0 +1,6 @@
++<?xml version="1.0" encoding="UTF-8"?>
++<project version="4">
++  <component name="VcsDirectoryMappings">
++    <mapping directory="$PROJECT_DIR$/../../../.." vcs="Git" />
++  </component>
++</project>
+\ No newline at end of file
