@@ -13,3 +13,7 @@ sly = "^0.5"
 [build-system]
 requires = ["poetry-core"]
 build-backend = "poetry.core.masonry.api"
+
+
+[tool.poetry.scripts]
+minimake = "minimake.__main__:main"
