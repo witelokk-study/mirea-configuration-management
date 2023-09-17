@@ -6,6 +6,6 @@ from minimake.dataclasses.variable import Variable
 
 
 @dataclass
-class Config:
-    vars: list[Variable] = field(default_factory=list)
-    rules: list[Rule] = field(default_factory=list)
+class Makefile:
+    vars: dict[str, str] = field(default_factory=dict)
+    rules: dict[str, Rule] = field(default_factory=dict)
