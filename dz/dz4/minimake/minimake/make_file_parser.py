@@ -61,6 +61,10 @@ class MakefileParser(Parser):
     def dependencies(self, p):
         return p.ids
 
+    @_("")
+    def dependencies(self, p):
+        return []
+
     @_("ids NEW_LINE")
     def command(self, p):
         return " ".join(p.ids)

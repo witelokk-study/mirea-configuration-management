@@ -1,26 +1,6 @@
 from argparse import ArgumentParser
-from pprint import pprint
-from os import environ
 
-from .make_file_parser import MakefileParser
-from .makefile_lexer import MakefileLexer
-
-
-def parse_makefile(path: str):
-    try:
-        with open(path) as f:
-            text = f.read()
-    except FileNotFoundError:
-        print("Invalid path")
-        return -1
-
-    lexer = MakefileLexer()
-    parser = MakefileParser()
-
-    tokens = lexer.tokenize(text)
-    config = parser.parse(tokens)
-
-    return config
+from minimake.minimake import Minimake
 
 
 def main():
@@ -29,7 +9,7 @@ def main():
     arg_parser.add_argument("-f", "--file", default="Minimakefile")
     args = arg_parser.parse_args()
 
-    makefile = parse_makefile(args.file)
+    Minimake(args.file, args.target).start()
 
 
 if __name__ == "__main__":
