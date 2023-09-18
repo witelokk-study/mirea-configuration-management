@@ -1,11 +1,14 @@
 from sly import Lexer
 
+
 class LangLexer(Lexer):
     literals = {"(", ")"}
-    tokens = {STRING, INT, FLOAT, BOOL}
+    tokens = {ID, STRING, INT, FLOAT, BOOL}
 
     # String containing ignored characters between tokens
     ignore = ' \t\n'
+
+    ID = r"[a-zA-Z][a-zA-Z0-9]*"
 
     @_(r"\".*?\"")
     def STRING(self, t):
