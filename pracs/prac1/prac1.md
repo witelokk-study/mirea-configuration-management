@@ -114,7 +114,7 @@ systemd-journal-upload
 
 %banner Код скрипта banner
 
-```bash bannner.sh
+```bash banner.sh
 ```
 
 ## Задание 4
@@ -130,7 +130,7 @@ systemd-journal-upload
 
 Например, пусть программа называется reg. В результате для banner задаются правильные права доступа и сам banner копируется в /usr/local/bin.
 
-```banner.sh
+```bash reg.sh
 ```
 
 ## Задание 6
