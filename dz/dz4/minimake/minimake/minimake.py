@@ -1,3 +1,4 @@
+import sys
 from os import path, environ
 import subprocess
 
@@ -9,7 +10,7 @@ from .make_file_parser import MakefileParser
 
 class Minimake:
     def __init__(self, file: str, target: str):
-        self._file = file
+        self._makefile_path = file
         self._target = target
         self._makefile = self._parse_makefile()
         self._hashes_manager = HashesManager(path.dirname(file))
@@ -19,11 +20,11 @@ class Minimake:
         for name, value in self._makefile.vars:
             environ[name] = value
 
-        if not self.proceed_target(self._target):
+        if not self._proceed_target(self._target):
             print(f"'{self._target}' is up to date.")
         self._hashes_manager.write()
 
-    def proceed_target(self, target) -> bool:
+    def _proceed_target(self, target) -> bool:
         """Executes target's commands if any dependency has been updated
 
         :returns: True if it was executed, otherwise False"""
@@ -36,7 +37,7 @@ class Minimake:
         for dependency in rule.dependencies:
             if dependency in self._makefile.rules:
                 requires_execution = requires_execution or\
-                                     self.proceed_target(dependency)
+                                     self._proceed_target(dependency)
                 continue
 
             # otherwise it is a file
@@ -51,7 +52,11 @@ class Minimake:
         return requires_execution
 
     def _parse_makefile(self) -> Makefile:
-        with open(self._file) as f:
-            text = f.read()
-            tokens = MakefileLexer().tokenize(text)
-            return MakefileParser().parse(tokens)
+        try:
+            with open(self._makefile_path) as f:
+                text = f.read()
+                tokens = MakefileLexer().tokenize(text)
+                return MakefileParser().parse(tokens)
+        except FileNotFoundError:
+            print(f"Error: File {self._makefile_path} not found!")
+            sys.exit(-1)
