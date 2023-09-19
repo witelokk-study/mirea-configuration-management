@@ -1,0 +1,3 @@
+[submodule "dz/dz6/sandboxer/sandboxer/libcpio"]
+	path = dz/dz6/sandboxer/sandboxer/libcpio
+	url = git@github.com:witelokk/libcpio.git
