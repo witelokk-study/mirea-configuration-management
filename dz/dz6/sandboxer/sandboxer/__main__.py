@@ -1,8 +1,14 @@
+from argparse import ArgumentParser
 from .sandboxer import Sandboxer
 
 
 def main():
-    sandboxer = Sandboxer(None)
+    parser = ArgumentParser("sandboxer")
+    parser.add_argument("program", help="Program's executable file")
+
+    args = parser.parse_args()
+
+    sandboxer = Sandboxer(args.program)
     sandboxer.run()
 
 
