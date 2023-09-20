@@ -3,7 +3,7 @@ from io import BytesIO
 from os import path
 import subprocess
 import pycdlib
-from .libcpio.libcpio import CpioArchive
+from .libcpio.libcpio import CpioArchive, CpioEntry
 
 from .copy_iso import copy_iso_file
 
@@ -11,7 +11,10 @@ from .copy_iso import copy_iso_file
 class Sandboxer:
     def __init__(self, program_path: str) -> None:
         self._modified_iso_path = None
-        self._program_path = program_path
+
+        with open(program_path, "rb") as program_file:
+            self._program = program_file.read()
+
         self._prepare_iso()
 
     def _prepare_iso(self):
@@ -65,6 +68,27 @@ class Sandboxer:
         core_cpio["etc/os-release"].data = \
             core_cpio["etc/os-release"].data \
             .replace(b"TinyCore", b"Witelokk")
+
+        # copy program to /bin
+        core_cpio.add(CpioEntry(
+            30234178,       # ino
+            0o100755,       # mode; sym?link - 41471
+            0,              # uid
+            0,              # gid
+            1,              # nlink
+            1681304330,     # mtime
+            8,              # devmajor
+            2,              # devminor
+            0,              # rdevminor
+            0,              # rdevmajor
+            0,              # check
+            "bin/program",  # path
+            self._program   # data
+        ))
+
+        # add '/bin/bash' to .profile
+        core_cpio["etc/skel/.profile"].data +=\
+            b"\n/bin/program"
 
     def run(self):
         """Runs provided program in a Qemu virtual machine"""
