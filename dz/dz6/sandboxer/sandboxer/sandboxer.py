@@ -3,7 +3,10 @@ from io import BytesIO
 from os import path
 import subprocess
 import pycdlib
+import tempfile
 from .libcpio.libcpio import CpioArchive, CpioEntry
+import os
+
 
 from .copy_iso import copy_iso_file
 
@@ -57,9 +60,12 @@ class Sandboxer:
             BytesIO(core_gz), len(core_gz), iso_path="/BOOT/CORE.GZ;1",
             rr_name="core.gz")
 
+        # create temporary file for modified iso
+        self._modified_iso_path = tempfile.mktemp()
+
         # write modfied iso
         new_iso_file.force_consistency()
-        new_iso_file.write("ModdedTinyCore.iso")
+        new_iso_file.write(self._modified_iso_path)
         new_iso_file.close()
 
     def _modify_core_cpio(self, core_cpio: CpioArchive):
@@ -97,8 +103,11 @@ class Sandboxer:
         subprocess.run([
             "qemu-system-x86_64",
             "-boot", "d",
-            "-cdrom", "ModdedTinyCore.iso",
+            "-cdrom", self._modified_iso_path,
             "-m", "2048",
             "-display", "gtk",
             "-accel", "kvm"
         ])
+
+    def __del__(self):
+        os.remove(self._modified_iso_path)
