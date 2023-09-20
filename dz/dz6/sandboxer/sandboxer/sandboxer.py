@@ -49,6 +49,9 @@ class Sandboxer:
         new_iso_file.new(rock_ridge="1.10", interchange_level=3, joliet=3)
         copy_iso_file(iso_file, new_iso_file)
 
+        # modify iso
+        self._modify_iso(new_iso_file)
+
         # add El Torito boot data to new iso
         new_iso_file.add_eltorito(
             "/BOOT/ISOLINUX/ISOLINUX.BIN;1", "/BOOT/ISOLINUX/BOOT.CAT;1",
@@ -96,6 +99,20 @@ class Sandboxer:
         core_cpio["etc/skel/.profile"].data +=\
             b"\n/bin/program"
 
+    def _modify_iso(self, iso: pycdlib.PyCdlib):
+        """Skip boot menu etc"""
+        isolinux_cfg_path = "/BOOT/ISOLINUX/ISOLINUX.CFG;1"
+        isolinux_cfg = BytesIO()
+        iso.get_file_from_iso_fp(isolinux_cfg,
+                                 iso_path=isolinux_cfg_path)
+        isolinux_cfg.seek(0)
+        isolinux_cfg_text = isolinux_cfg.read()\
+            .replace(b"prompt 1", b"prompt 0")
+        iso.rm_file(iso_path=isolinux_cfg_path)
+        iso.add_fp(
+            BytesIO(isolinux_cfg_text), len(isolinux_cfg_text),
+            iso_path=isolinux_cfg_path, rr_name="isolinux.cfg")
+
     def run(self):
         """Runs provided program in a Qemu virtual machine"""
 
@@ -110,4 +127,5 @@ class Sandboxer:
         ])
 
     def __del__(self):
-        os.remove(self._modified_iso_path)
+        if self._modified_iso_path:
+            os.remove(self._modified_iso_path)
