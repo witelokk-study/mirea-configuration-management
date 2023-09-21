@@ -12,8 +12,10 @@ from .copy_iso import copy_iso_file
 
 
 class Sandboxer:
-    def __init__(self, program_path: str) -> None:
+    def __init__(self, program_path: str, ui: bool) -> None:
         self._modified_iso_path = None
+        self._ui = ui
+        print(ui)
 
         with open(program_path, "rb") as program_file:
             self._program = program_file.read()
@@ -22,7 +24,9 @@ class Sandboxer:
 
     def _prepare_iso(self):
         # locate initial iso file
-        iso_path = path.join(path.dirname(__file__), "Core-current.iso")
+        iso_path = path.join(
+            path.dirname(__file__), 
+            "TinyCore-current.iso" if self._ui else "Core-current.iso")
 
         # extract core.gz from archive
         iso_file = pycdlib.PyCdlib()
@@ -95,9 +99,13 @@ class Sandboxer:
             self._program   # data
         ))
 
-        # add '/bin/bash' to .profile
-        core_cpio["etc/skel/.profile"].data +=\
-            b"\n/bin/program"
+        # add '/bin/bash' to .profile or .xsession
+        if self._ui:
+            core_cpio["etc/init.d/tc-config"].data +=\
+                b"\necho '\n/bin/program' >> '/home/tc/.xsession'"
+        else:
+            core_cpio["etc/skel/.profile"].data +=\
+                b"\n/bin/program"
 
     def _modify_iso(self, iso: pycdlib.PyCdlib):
         """Skip boot menu etc"""
@@ -106,8 +114,17 @@ class Sandboxer:
         iso.get_file_from_iso_fp(isolinux_cfg,
                                  iso_path=isolinux_cfg_path)
         isolinux_cfg.seek(0)
+
         isolinux_cfg_text = isolinux_cfg.read()\
-            .replace(b"prompt 1", b"prompt 0")
+
+        if self._ui:
+            isolinux_cfg_text = isolinux_cfg_text\
+                .replace(b"TIMEOUT 600", b"TIMEOUT 1")
+            print(isolinux_cfg_text)
+        else:
+            isolinux_cfg_text = isolinux_cfg_text\
+                .replace(b"prompt 1", b"prompt 0")
+
         iso.rm_file(iso_path=isolinux_cfg_path)
         iso.add_fp(
             BytesIO(isolinux_cfg_text), len(isolinux_cfg_text),
