@@ -120,7 +120,6 @@ class Sandboxer:
         if self._ui:
             isolinux_cfg_text = isolinux_cfg_text\
                 .replace(b"TIMEOUT 600", b"TIMEOUT 1")
-            print(isolinux_cfg_text)
         else:
             isolinux_cfg_text = isolinux_cfg_text\
                 .replace(b"prompt 1", b"prompt 0")
