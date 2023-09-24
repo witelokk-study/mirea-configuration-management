@@ -14,11 +14,13 @@ from .copy_iso import copy_iso_file
 
 
 class Sandboxer:
-    def __init__(self, program_path: str, ui: bool, from_source: bool) -> None:
+    def __init__(self, program_path: str, ui: bool, from_source: bool,
+                 headless_output: str) -> None:
         self._modified_iso_path = None
         self._ui = ui
         self._from_source = from_source
         self._program_path = program_path
+        self._headless_output = headless_output
 
         self._prepare_iso()
 
@@ -115,17 +117,30 @@ class Sandboxer:
                     0,                      # rdevmajor
                     0,                      # check
                     "etc/skel/program",     # path
-                    program_file.read() # data
+                    program_file.read()     # data
                 ))
             exec_command = "/home/tc/program"
 
-        # add '/bin/bash' to .profile or .xsession
         if self._ui:
             core_cpio["etc/init.d/tc-config"].data +=\
                 f"\necho \"\naterm -e sh -c '{exec_command}; sh'\" >> '/home/tc/.xsession'".encode()
         else:
-            core_cpio["etc/skel/.profile"].data += \
-                b"\n/bin/program"
+            skel_profile = core_cpio["etc/skel/.profile"].data.decode()
+            if self._headless_output:
+                # add text to find start and end of program output
+                skel_profile += "\necho '========sandboxer======='"
+
+            skel_profile += f"\n{exec_command}"
+
+            if self._headless_output:
+                # login user to ttys0 instead of tty1
+                core_cpio["etc/inittab"].data = core_cpio["etc/inittab"].data\
+                    .replace(b"tty1", b"ttyS0")
+                skel_profile += "\necho '========sandboxer======='"
+                # shutdown after program execution
+                skel_profile += f"\nsudo poweroff"
+
+            core_cpio["etc/skel/.profile"].data = skel_profile.encode()
 
     def _copy_dir_to_cpio(self, cpio_archive: CpioArchive, dir_path: str,
                           target_dir: str):
@@ -199,9 +214,18 @@ class Sandboxer:
             isolinux_cfg_text = isolinux_cfg_text\
                 .replace(b"TIMEOUT 600", b"TIMEOUT 1")
         else:
+            kernel_options = ["cde"]  # loads packages from cde/onboot.lst
+
+            if self._headless_output:
+                kernel_options.append(
+                    # "console=ttyAMA0,115200 console=tty  highres=off "
+                    "console=ttyS0"
+                )
+
             isolinux_cfg_text = isolinux_cfg_text\
                 .replace(b"prompt 1", b"prompt 0")\
-                .replace(b"append", b"append cde")  # load packages
+                .replace(b"append",
+                         b"append " + " ".join(kernel_options).encode())
 
         iso.rm_file(iso_path=isolinux_cfg_path)
         iso.add_fp(
@@ -242,16 +266,27 @@ class Sandboxer:
 
     def run(self):
         """Runs provided program in a Qemu virtual machine"""
-
-        # run qemu with modified iso
-        subprocess.run([
+        qemu_args = [
             "qemu-system-x86_64",
             "-boot", "d",
             "-cdrom", self._modified_iso_path,
             "-m", "2048",
-            "-display", "gtk",
-            "-accel", "kvm"
-        ])
+        ]
+
+        if self._headless_output:
+            qemu_args += ["-nographic"]
+        else:
+            qemu_args += ["-display", "gtk", "-accel", "kvm"]
+
+        p = subprocess.Popen(qemu_args, stdout=subprocess.PIPE, text=True)
+        output, _ = p.communicate()
+
+        if self._headless_output:
+            output_start = output.find("========sandboxer=======") + 24
+            output_end = output.find("========sandboxer=======", output_start)
+
+            with open(self._headless_output, "w") as f:
+                f.write(output[output_start:output_end])
 
     def __del__(self):
         if self._modified_iso_path:
