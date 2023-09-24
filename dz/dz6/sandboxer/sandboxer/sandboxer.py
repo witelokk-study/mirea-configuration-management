@@ -1,7 +1,9 @@
 import gzip
 from io import BytesIO
-from os import path
+from os import path, listdir
 import subprocess
+from random import randint
+
 import pycdlib
 import tempfile
 from .libcpio.libcpio import CpioArchive, CpioEntry
@@ -12,13 +14,11 @@ from .copy_iso import copy_iso_file
 
 
 class Sandboxer:
-    def __init__(self, program_path: str, ui: bool) -> None:
+    def __init__(self, program_path: str, ui: bool, from_source: bool) -> None:
         self._modified_iso_path = None
         self._ui = ui
-        print(ui)
-
-        with open(program_path, "rb") as program_file:
-            self._program = program_file.read()
+        self._from_source = from_source
+        self._program_path = program_path
 
         self._prepare_iso()
 
@@ -26,13 +26,14 @@ class Sandboxer:
         # locate initial iso file
         iso_path = path.join(
             path.dirname(__file__), 
-            "TinyCore-current.iso" if self._ui else "Core-current.iso")
+            "data/iso/TinyCorePure64-current.iso" if self._ui
+            else "data/iso/CorePure64-current.iso")
 
         # extract core.gz from archive
         iso_file = pycdlib.PyCdlib()
         iso_file.open(iso_path, "rb")
         core_gz = BytesIO()
-        iso_file.get_file_from_iso_fp(core_gz, iso_path="/BOOT/CORE.GZ;1")
+        iso_file.get_file_from_iso_fp(core_gz, iso_path="/BOOT/COREPURE64.GZ;1")
 
         # extract core.cpio from core.gz
         core_gz.seek(0)
@@ -62,10 +63,10 @@ class Sandboxer:
             boot_info_table=True)
 
         # replace core.gz with modified core.gz
-        new_iso_file.rm_file(iso_path="/BOOT/CORE.GZ;1")
+        new_iso_file.rm_file(iso_path="/BOOT/COREPURE64.GZ;1")
         new_iso_file.add_fp(
-            BytesIO(core_gz), len(core_gz), iso_path="/BOOT/CORE.GZ;1",
-            rr_name="core.gz")
+            BytesIO(core_gz), len(core_gz), iso_path="/BOOT/COREPURE64.GZ;1",
+            rr_name="corepure64.gz")
 
         # create temporary file for modified iso
         self._modified_iso_path = tempfile.mktemp()
@@ -78,34 +79,111 @@ class Sandboxer:
     def _modify_core_cpio(self, core_cpio: CpioArchive):
         """Load binaries, change configs etc"""
 
-        core_cpio["etc/os-release"].data = \
-            core_cpio["etc/os-release"].data \
-            .replace(b"TinyCore", b"Witelokk")
-
-        # copy program to /bin
+        # link /lib64 to /lib
         core_cpio.add(CpioEntry(
-            30234178,       # ino
-            0o100755,       # mode; sym?link - 41471
-            0,              # uid
-            0,              # gid
-            1,              # nlink
-            1681304330,     # mtime
-            8,              # devmajor
-            2,              # devminor
-            0,              # rdevminor
-            0,              # rdevmajor
-            0,              # check
-            "bin/program",  # path
-            self._program   # data
+            32231531,                # ino
+            0o120777,                # mode; sym?link
+            0,                       # uid
+            0,                       # gid
+            1,                       # nlink
+            1681304330,              # mtime
+            8,                       # devmajor
+            2,                       # devminor
+            0,                       # rdevminor
+            0,                       # rdevmajor
+            0,                       # check
+            "lib64",                 # path
+            b"/lib"                  # data
         ))
+
+        # copy program to /etc/skel
+        if self._from_source:
+            self._copy_dir_to_cpio(core_cpio, self._program_path, "/etc/skel")
+            exec_command = f"cd /home/tc/{self._program_path};make run"
+        else:
+            with open(self._program_path, "rb") as program_file:
+                core_cpio.add(CpioEntry(
+                    30234178,               # ino
+                    0o100755,               # mode; sym?link - 41471
+                    0,                      # uid
+                    0,                      # gid
+                    1,                      # nlink
+                    1681304330,             # mtime
+                    8,                      # devmajor
+                    2,                      # devminor
+                    0,                      # rdevminor
+                    0,                      # rdevmajor
+                    0,                      # check
+                    "etc/skel/program",     # path
+                    program_file.read() # data
+                ))
+            exec_command = "/home/tc/program"
 
         # add '/bin/bash' to .profile or .xsession
         if self._ui:
             core_cpio["etc/init.d/tc-config"].data +=\
-                b"\necho '\n/bin/program' >> '/home/tc/.xsession'"
+                f"\necho \"\naterm -e sh -c '{exec_command}; sh'\" >> '/home/tc/.xsession'".encode()
         else:
-            core_cpio["etc/skel/.profile"].data +=\
+            core_cpio["etc/skel/.profile"].data += \
                 b"\n/bin/program"
+
+    def _copy_dir_to_cpio(self, cpio_archive: CpioArchive, dir_path: str,
+                          target_dir: str):
+        dir_path = path.abspath(dir_path)
+
+        full_path = path.join(target_dir, path.basename(dir_path))
+
+        # create a directory
+        cpio_archive.add(CpioEntry(
+            30234143,                   # ino
+            0o40755,                    # mode; sym?link - 41471
+            0,                          # uid
+            0,                          # gid
+            2,                          # nlink
+            1681304330,                 # mtime
+            8,                          # devmajor
+            2,                          # devminor
+            0,                          # rdevminor
+            0,                          # rdevmajor
+            0,                          # check
+            full_path,                  # path
+            b""                         # data
+        ))
+        # copy children
+        for child in listdir(dir_path):
+            if path.isdir(path.join(dir_path, child)):
+                self._copy_dir_to_cpio(
+                    cpio_archive,
+                    path.join(dir_path, child),
+                    full_path
+                )
+            else:
+                self._copy_file_to_cpio(
+                    cpio_archive,
+                    path.join(dir_path, child),
+                    full_path
+                )
+
+    def _copy_file_to_cpio(self, cpio_archive: CpioArchive, file_path: str,
+                           target_dir: str):
+        file_path = path.abspath(file_path)
+
+        with open(file_path, "rb") as file:
+            cpio_archive.add(CpioEntry(
+                randint(10000, 99999),  # ino
+                0o100755,  # mode; sym?link - 41471
+                0,  # uid
+                0,  # gid
+                1,  # nlink
+                1681304330,  # mtime
+                8,  # devmajor
+                2,  # devminor
+                0,  # rdevminor
+                0,  # rdevmajor
+                0,  # check
+                path.join(target_dir, path.basename(file_path)),  # path
+                file.read()  # data
+            ))
 
     def _modify_iso(self, iso: pycdlib.PyCdlib):
         """Skip boot menu etc"""
@@ -122,12 +200,45 @@ class Sandboxer:
                 .replace(b"TIMEOUT 600", b"TIMEOUT 1")
         else:
             isolinux_cfg_text = isolinux_cfg_text\
-                .replace(b"prompt 1", b"prompt 0")
+                .replace(b"prompt 1", b"prompt 0")\
+                .replace(b"append", b"append cde")  # load packages
 
         iso.rm_file(iso_path=isolinux_cfg_path)
         iso.add_fp(
             BytesIO(isolinux_cfg_text), len(isolinux_cfg_text),
             iso_path=isolinux_cfg_path, rr_name="isolinux.cfg")
+
+        # add extensions
+        extensions = ("gcc", "make", "isl", "isl_dev", "mpc", "mpc_dev",
+                      "mpfr", "mpfr_dev", "gmp", "gmp_dev", "zstd", "zstd_dev",
+                      "libzstd", "glibc_base_dev", "linux_headers", "binutils",
+                      "glibc_add_lib",)
+
+        try:
+            iso.add_directory(iso_path="/CDE", rr_name="cde")
+            iso.add_directory(iso_path="/CDE/OPTIONAL", rr_name="optional")
+        except pycdlib.pycdlibexception.PyCdlibInvalidInput:
+            pass
+        for extension in extensions:
+            extension_path = path.join(
+                path.dirname(__file__), f"data/tcz/{extension}.tcz")
+            iso.add_file(
+                extension_path,
+                iso_path=f"/CDE/OPTIONAL/{extension}.tcz;1".upper(),
+                rr_name=extension+".tcz")
+
+        try:
+            xbase = BytesIO()
+            iso.get_file_from_iso_fp(xbase, iso_path="/CDE/ONBOOT.LST;1")
+            new_xbase_data = xbase.getvalue().decode()
+            iso.rm_file("/CDE/ONBOOT.LST;1", "onboot.lst")
+        except pycdlib.pycdlibexception.PyCdlibInvalidInput:
+            new_xbase_data = ""
+        new_xbase_data += "\n".join(x+".tcz" for x in extensions)
+        new_xbase_data = new_xbase_data.encode()
+        iso.add_fp(BytesIO(new_xbase_data), len(new_xbase_data),
+                   iso_path="/CDE/ONBOOT.LST;1", rr_name="onboot.lst")
+
 
     def run(self):
         """Runs provided program in a Qemu virtual machine"""
