@@ -1,7 +1,8 @@
-testf:
-	echo 'test'
+aa: a c
+    echo aa
 
+bb: b c
+    echo bb
 
-a.out: hello.c
-	gcc hello.c
-
+dd: d aa bb
+    echo dd

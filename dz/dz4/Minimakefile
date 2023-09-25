@@ -1,8 +1,0 @@
-# this is comment
-
-x="5"
-y = "3"
-
-target: p1 p2 p3
-    command1 opt1 opt2 more options . ^ #
-    command2 some options here as w33l

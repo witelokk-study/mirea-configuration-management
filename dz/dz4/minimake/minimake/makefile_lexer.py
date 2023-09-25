@@ -7,6 +7,7 @@ class MakefileLexer(Lexer):
         STRING,
         COL,
         NEW_LINE,
+        VARIABLE,
     }
     literals = {"=", " ", "\t"}
 
@@ -28,4 +29,9 @@ class MakefileLexer(Lexer):
     @_(r'^[ \t]+.+')  # Matches lines starting with spaces or tabs
     def COMMAND(self, t):
         # t.value = t.value.lstrip()  # Remove leading whitespace
+        return t
+
+    @_(r"\$\(.*?\)")
+    def VARIABLE(self, t):
+        t.value = t.value.removeprefix("$(").removesuffix(")")
         return t
