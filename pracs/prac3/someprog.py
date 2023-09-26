@@ -35,7 +35,14 @@ curly_brackets = { brackets } | {}
 parentheses = ( brackets ) | ()
 '''
 
-BNF = BNF_TASK4
+BNF_TASK5 = '''
+E = expr
+var = x | y
+val = var | ( expr )
+expr = ~ val | val & val | val + val
+'''
+
+BNF = BNF_TASK5
 
 for i in range(10):
     print(generate_phrase(parse_bnf(BNF), 'E'))
