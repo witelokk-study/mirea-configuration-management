@@ -1,13 +1,12 @@
 # Практическое занятие №3. Конфигурационные языки
 
-П.Н. Советов, РТУ МИРЭА
-
 Разобраться, что собой представляют программируемые конфигурационные языки (Jsonnet, Dhall, CUE).
 
 ## Задача 1
 
 Реализовать на Jsonnet приведенный ниже пример в формате JSON. Использовать в реализации свойство программируемости и принцип DRY.
 
+Решение:
 
 ```jsonnet task1.jsonnet
 ```
@@ -16,7 +15,7 @@
 
 Реализовать на Dhall приведенный ниже пример в формате JSON. Использовать в реализации свойство программируемости и принцип DRY.
 
-```
+```json
 {
   "groups": [
     "ИКБО-1-20",
@@ -60,11 +59,12 @@
       "group": "ИКБО-5-20",
       "name": "Сидоров С.С."
     },
-    <добавьте ваши данные в качестве четвертого студента>
+    // <добавьте ваши данные в качестве четвертого студента>
   ],
   "subject": "Конфигурационное управление"
 } 
 ```
+Решение:
 
 ```dhall
 let makeStudent = \(age : Natural) -> \(group : Text) -> \(name : Text) ->
@@ -88,6 +88,7 @@ in  [ makeStudent 19 "hello" "Иванов И.И.",
 101101
 000
 ```
+Решение:
 
 ```
 E = bytes
@@ -106,6 +107,7 @@ byte = 0 | 1
 ()
 {}
 ```
+Решение:
 
 ```
 E = brackets
@@ -126,23 +128,11 @@ y & ~(y)
 ~((x) & y | (y) | (x)) & x | x | (y & ~y)
 ```
 
+Решение:
+
 ```
 E = expr
 var = x | y
 val = var | ( expr )
 expr = ~ val | val & val | val + val
 ```
-
-## Полезные ссылки
-
-Configuration complexity clock: https://mikehadlow.blogspot.com/2012/05/configuration-complexity-clock.html
-
-Json: http://www.json.org/json-ru.html
-
-Язык Jsonnet: https://jsonnet.org/learning/tutorial.html
-
-Язык Dhall: https://dhall-lang.org/
-
-Учебник в котором темы построения синтаксических анализаторов (БНФ, Lex/Yacc) изложены подробно: https://ita.sibsutis.ru/sites/csc.sibsutis.ru/files/courses/trans/LanguagesAndTranslationMethods.pdf
-
-Полезные материалы для разработчика (очень рекомендую посмотреть слайды и прочие ссылки, все это актуально и для других тем нашего курса): https://habr.com/ru/company/JetBrains-education/blog/547768/
