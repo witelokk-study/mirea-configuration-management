@@ -46,11 +46,15 @@ jobs:
         source venv/bin/activate
         cd dz
         for dir in $(ls); do
-          md2gost $dir/$dir.md -T $dir/title.docx --syntax-highlighting;
+          if [ ! - f $dir/$dir.md ]; then
+            md2gost $dir/$dir.md -T $dir/title.docx --syntax-highlighting;
+          fi;
         done
         cd ../pracs
         for dir in $(ls); do
-          md2gost $dir/$dir.md -T $dir/title.docx --syntax-highlighting;
+          if [ ! - f $dir/$dir.md ]; then
+            md2gost $dir/$dir.md -T $dir/title.docx --syntax-highlighting;
+          fi;
         done
     - uses: actions/upload-artifact@v3
       with:
