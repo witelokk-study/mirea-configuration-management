@@ -40,41 +40,41 @@
 ## Исходный код
 
 % Исходный код файла minimake/minimake/__main__.py
-```./minimake/minimake/__main__.py
+```python ./minimake/minimake/__main__.py
 ```
 
 % Исходный код файла minimake/minimake/dataclasses/rule.py
-```./minimake/minimake/dataclasses/rule.py
+```python ./minimake/minimake/dataclasses/rule.py
 ```
 
 % Исходный код файла minimake/minimake/dataclasses/variable.py
-```./minimake/minimake/dataclasses/variable.py
+```python ./minimake/minimake/dataclasses/variable.py
 ```
 
 % Исходный код файла minimake/minimake/dataclasses/makefile.py
-```./minimake/minimake/dataclasses/makefile.py
+```python ./minimake/minimake/dataclasses/makefile.py
 ```
 
 % Исходный код файла minimake/minimake/minimake.py
-```./minimake/minimake/minimake.py
+```python ./minimake/minimake/minimake.py
 ```
 
 % Исходный код файла minimake/minimake/hashes_manager.py
-```./minimake/minimake/hashes_manager.py
+```python ./minimake/minimake/hashes_manager.py
 ```
 
 % Исходный код файла minimake/minimake/graph.py
-```./minimake/minimake/graph.py
+```python ./minimake/minimake/graph.py
 ```
 
 % Исходный код файла minimake/minimake/make_file_parser.py
-```./minimake/minimake/make_file_parser.py
+```python ./minimake/minimake/make_file_parser.py
 ```
 
 % Исходный код файла minimake/minimake/makefile_lexer.py
-```./minimake/minimake/makefile_lexer.py
+```python ./minimake/minimake/makefile_lexer.py
 ```
 
-% Исходный код файла 
-```./minimake/pyproject.toml
+% Исходный код файла minimake/pyproject.toml
+```toml ./minimake/pyproject.toml
 ```
