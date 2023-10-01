@@ -15,4 +15,4 @@ if __name__ == "__main__":
         exit(-1)
 
     converter = Converter()
-    print(converter.convert(text))
+    print(converter.convert(text, indent=4))

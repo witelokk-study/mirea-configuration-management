@@ -5,6 +5,14 @@
     "version": "0.2.0",
     "configurations": [
         {
+            "name": "sandboxer",
+            "type": "python",
+            "request": "launch",
+            "module": "sandboxer",
+            "args": ["/home/roman/Projects/cfgmgmt/dz/dz6/test/test.sh"],
+            "justMyCode": true
+        },
+        {
             "name": "dependency_visualizer",
             "type": "python",
             "request": "launch",

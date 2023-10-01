@@ -1,0 +1,236 @@
+Grammar:
+
+Rule 0     S' -> makefile
+Rule 1     makefile -> expr_list
+Rule 2     expr_list -> expr expr_list
+Rule 3     expr_list -> expr
+Rule 4     expr -> NEW_LINE
+Rule 5     expr -> var_assign
+Rule 6     expr -> rule
+Rule 7     var_assign -> ID = STRING
+Rule 8     rule -> ID COL dependencies
+Rule 9     rule -> ID COL commands
+Rule 10    rule -> ID COL dependencies commands
+Rule 11    dependencies -> dependencies ID
+Rule 12    dependencies -> ID
+Rule 13    commands -> COMMAND
+Rule 14    commands -> COMMAND commands
+
+Terminals, with rules where they appear:
+
+=                    : 7
+COL                  : 8 9 10
+COMMAND              : 13 14
+ID                   : 7 8 9 10 11 12
+NEW_LINE             : 4
+STRING               : 7
+error                : 
+
+Nonterminals, with rules where they appear:
+
+commands             : 9 10 14
+dependencies         : 8 10 11
+expr                 : 2 3
+expr_list            : 1 2
+makefile             : 0
+rule                 : 6
+var_assign           : 5
+
+
+state 0
+
+    (0) S' -> . makefile
+    (1) makefile -> . expr_list
+    (2) expr_list -> . expr expr_list
+    (3) expr_list -> . expr
+    (4) expr -> . NEW_LINE
+    (5) expr -> . var_assign
+    (6) expr -> . rule
+    (7) var_assign -> . ID = STRING
+    (8) rule -> . ID COL dependencies
+    (9) rule -> . ID COL commands
+    (10) rule -> . ID COL dependencies commands
+    NEW_LINE        shift and go to state 4
+    ID              shift and go to state 7
+
+    makefile                       shift and go to state 1
+    expr_list                      shift and go to state 2
+    expr                           shift and go to state 3
+    var_assign                     shift and go to state 5
+    rule                           shift and go to state 6
+
+state 1
+
+    (0) S' -> makefile .
+
+
+state 2
+
+    (1) makefile -> expr_list .
+    $end            reduce using rule 1 (makefile -> expr_list .)
+
+
+state 3
+
+    (2) expr_list -> expr . expr_list
+    (3) expr_list -> expr .
+    (2) expr_list -> . expr expr_list
+    (3) expr_list -> . expr
+    (4) expr -> . NEW_LINE
+    (5) expr -> . var_assign
+    (6) expr -> . rule
+    (7) var_assign -> . ID = STRING
+    (8) rule -> . ID COL dependencies
+    (9) rule -> . ID COL commands
+    (10) rule -> . ID COL dependencies commands
+    $end            reduce using rule 3 (expr_list -> expr .)
+    NEW_LINE        shift and go to state 4
+    ID              shift and go to state 7
+
+    expr                           shift and go to state 3
+    expr_list                      shift and go to state 8
+    var_assign                     shift and go to state 5
+    rule                           shift and go to state 6
+
+state 4
+
+    (4) expr -> NEW_LINE .
+    NEW_LINE        reduce using rule 4 (expr -> NEW_LINE .)
+    ID              reduce using rule 4 (expr -> NEW_LINE .)
+    $end            reduce using rule 4 (expr -> NEW_LINE .)
+
+
+state 5
+
+    (5) expr -> var_assign .
+    NEW_LINE        reduce using rule 5 (expr -> var_assign .)
+    ID              reduce using rule 5 (expr -> var_assign .)
+    $end            reduce using rule 5 (expr -> var_assign .)
+
+
+state 6
+
+    (6) expr -> rule .
+    NEW_LINE        reduce using rule 6 (expr -> rule .)
+    ID              reduce using rule 6 (expr -> rule .)
+    $end            reduce using rule 6 (expr -> rule .)
+
+
+state 7
+
+    (7) var_assign -> ID . = STRING
+    (8) rule -> ID . COL dependencies
+    (9) rule -> ID . COL commands
+    (10) rule -> ID . COL dependencies commands
+    =               shift and go to state 9
+    COL             shift and go to state 10
+
+
+state 8
+
+    (2) expr_list -> expr expr_list .
+    $end            reduce using rule 2 (expr_list -> expr expr_list .)
+
+
+state 9
+
+    (7) var_assign -> ID = . STRING
+    STRING          shift and go to state 11
+
+
+state 10
+
+    (8) rule -> ID COL . dependencies
+    (9) rule -> ID COL . commands
+    (10) rule -> ID COL . dependencies commands
+    (11) dependencies -> . dependencies ID
+    (12) dependencies -> . ID
+    (13) commands -> . COMMAND
+    (14) commands -> . COMMAND commands
+    ID              shift and go to state 12
+    COMMAND         shift and go to state 15
+
+    dependencies                   shift and go to state 13
+    commands                       shift and go to state 14
+
+state 11
+
+    (7) var_assign -> ID = STRING .
+    NEW_LINE        reduce using rule 7 (var_assign -> ID = STRING .)
+    ID              reduce using rule 7 (var_assign -> ID = STRING .)
+    $end            reduce using rule 7 (var_assign -> ID = STRING .)
+
+
+state 12
+
+    (12) dependencies -> ID .
+    ID              reduce using rule 12 (dependencies -> ID .)
+    COMMAND         reduce using rule 12 (dependencies -> ID .)
+    NEW_LINE        reduce using rule 12 (dependencies -> ID .)
+    $end            reduce using rule 12 (dependencies -> ID .)
+
+
+state 13
+
+    (8) rule -> ID COL dependencies .
+    (10) rule -> ID COL dependencies . commands
+    (11) dependencies -> dependencies . ID
+    (13) commands -> . COMMAND
+    (14) commands -> . COMMAND commands
+  ! shift/reduce conflict for ID resolved as shift
+    NEW_LINE        reduce using rule 8 (rule -> ID COL dependencies .)
+    $end            reduce using rule 8 (rule -> ID COL dependencies .)
+    ID              shift and go to state 16
+    COMMAND         shift and go to state 15
+
+    commands                       shift and go to state 17
+
+state 14
+
+    (9) rule -> ID COL commands .
+    NEW_LINE        reduce using rule 9 (rule -> ID COL commands .)
+    ID              reduce using rule 9 (rule -> ID COL commands .)
+    $end            reduce using rule 9 (rule -> ID COL commands .)
+
+
+state 15
+
+    (13) commands -> COMMAND .
+    (14) commands -> COMMAND . commands
+    (13) commands -> . COMMAND
+    (14) commands -> . COMMAND commands
+    NEW_LINE        reduce using rule 13 (commands -> COMMAND .)
+    ID              reduce using rule 13 (commands -> COMMAND .)
+    $end            reduce using rule 13 (commands -> COMMAND .)
+    COMMAND         shift and go to state 15
+
+    commands                       shift and go to state 18
+
+state 16
+
+    (11) dependencies -> dependencies ID .
+    ID              reduce using rule 11 (dependencies -> dependencies ID .)
+    COMMAND         reduce using rule 11 (dependencies -> dependencies ID .)
+    NEW_LINE        reduce using rule 11 (dependencies -> dependencies ID .)
+    $end            reduce using rule 11 (dependencies -> dependencies ID .)
+
+
+state 17
+
+    (10) rule -> ID COL dependencies commands .
+    NEW_LINE        reduce using rule 10 (rule -> ID COL dependencies commands .)
+    ID              reduce using rule 10 (rule -> ID COL dependencies commands .)
+    $end            reduce using rule 10 (rule -> ID COL dependencies commands .)
+
+
+state 18
+
+    (14) commands -> COMMAND commands .
+    NEW_LINE        reduce using rule 14 (commands -> COMMAND commands .)
+    ID              reduce using rule 14 (commands -> COMMAND commands .)
+    $end            reduce using rule 14 (commands -> COMMAND commands .)
+
+
+Conflicts:
+
+shift/reduce conflict for ID in state 13 resolved as shift

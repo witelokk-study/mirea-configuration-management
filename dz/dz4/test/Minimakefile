@@ -1,8 +1,13 @@
+x:
+    a
+
+y: x
+
 aa: a c
     echo aa
 
 bb: b c
-    echo bb
+	echo bb
 
 dd: d aa bb
-    echo dd
+	echo dd

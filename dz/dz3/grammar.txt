@@ -1,0 +1,4 @@
+<program> ::= <s-exp-list>
+<s-exp> ::= <data> |  '(' <s-exp-list> ')'
+<s-exp-list> ::= <sexp> <s-exp-list> |
+<data>

@@ -7,6 +7,7 @@ class LangLexer(Lexer):
 
     # String containing ignored characters between tokens
     ignore = ' \t\n'
+    ignore_comments = "#.+"
 
     ID = r"[a-zA-Z][a-zA-Z0-9]*"
 

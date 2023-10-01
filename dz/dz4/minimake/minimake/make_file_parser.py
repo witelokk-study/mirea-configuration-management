@@ -7,6 +7,7 @@ from .dataclasses.rule import Rule
 
 
 class MakefileParser(Parser):
+    debugfile = 'parser.out'
     tokens = MakefileLexer.tokens
 
     @_("expr_list")
@@ -45,34 +46,30 @@ class MakefileParser(Parser):
     def var_assign(self, p):
         return Variable(p.ID, p.STRING)
 
-    @_("ID COL dependencies NEW_LINE commands")
+    @_("ID COL dependencies commands")
     def rule(self, p):
         return Rule(p.ID, p.dependencies, p.commands)
 
+    @_("ID COL commands")
+    def rule(self, p):
+        return Rule(p.ID, [], p.commands)
+
+    @_("ID COL dependencies")
+    def rule(self, p):
+        return Rule(p.ID, p.dependencies, [])
+
     @_("ID")
-    def ids(self, p):
+    def dependencies(self, p):
         return [p.ID]
 
-    @_("ID ids")
-    def ids(self, p):
-        return [p.ID] + p.ids
-
-    @_("ids")
+    @_("dependencies ID")
     def dependencies(self, p):
-        return p.ids
+        return p.dependencies + [p.ID]
 
-    @_("")
-    def dependencies(self, p):
-        return []
-
-    @_("ids NEW_LINE")
-    def command(self, p):
-        return " ".join(p.ids)
-
-    @_("command")
+    @_("COMMAND commands")
     def commands(self, p):
-        return [p.command]
+        return [p.COMMAND] + p.commands
 
-    @_("command commands")
+    @_("COMMAND")
     def commands(self, p):
-        return [p.command] + p.commands
+        return [p.COMMAND]
