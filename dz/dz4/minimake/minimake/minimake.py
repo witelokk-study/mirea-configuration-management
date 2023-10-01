@@ -2,7 +2,7 @@ import os
 import subprocess
 import sys
 from collections import defaultdict
-from os import path, environ
+from os import path
 
 from .dataclasses.makefile import Makefile
 from .hashes_manager import HashesManager
@@ -14,8 +14,16 @@ from .graph import topological_sort
 class Minimake:
     def __init__(self, file: str, target: str):
         self._makefile_path = file
-        self._target = target
         self._makefile = self._parse_makefile()
+
+        if len(self._makefile.rules) == 0:
+            print("No targets!")
+            sys.exit(1)
+
+        # if target is not specified, run the first one
+        self._target = target if target else\
+            list(self._makefile.rules.items())[0][0]
+
         self._hashes_manager = HashesManager(path.dirname(file))
 
     def start(self):

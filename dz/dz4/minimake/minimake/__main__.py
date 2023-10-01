@@ -9,7 +9,10 @@ def main():
     arg_parser.add_argument("-f", "--file", default="Minimakefile")
     args = arg_parser.parse_args()
 
-    Minimake(args.file, args.target).start()
+    try:
+        Minimake(args.file, args.target).start()
+    except RuntimeError as e:
+        print(e)
 
 
 if __name__ == "__main__":

@@ -1,3 +1,4 @@
+from io import StringIO
 from sly import Parser
 
 from .dataclasses.makefile import Makefile
@@ -7,7 +8,7 @@ from .dataclasses.rule import Rule
 
 
 class MakefileParser(Parser):
-    debugfile = 'parser.out'
+    # debugfile = 'parser.out'
     tokens = MakefileLexer.tokens
 
     @_("expr_list")
