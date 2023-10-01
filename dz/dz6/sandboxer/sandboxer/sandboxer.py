@@ -6,7 +6,7 @@ from random import randint
 
 import pycdlib
 import tempfile
-from .libcpio.libcpio import CpioArchive, CpioEntry
+from .libcpio import CpioArchive, CpioEntry
 import os
 
 
