@@ -8,12 +8,11 @@ class MakefileLexer(Lexer):
         COL,
         COMMAND,
         NEW_LINE,
-        # VARIABLE,
     }
-    literals = {"=", " ", "\t"}
+    literals = {"=", }
 
     # Tokens
-    @_(r"\n(\t|\s\s\s\s).+")
+    @_(r"\n(\t|\s{4}).+")
     def COMMAND(self, t):
         t.value = t.value.strip()
         return t
@@ -24,14 +23,8 @@ class MakefileLexer(Lexer):
     COL = r":"
 
     # Ignore whitespace and tabs
-    ignore = ' '
+    ignore = ' \t'
     ignore_comment = r'\#.*'
-
-
-    # Error handling
-    def error(self, t):
-        print(f"Illegal character '{t.value[0]}' at line {self.lineno}")
-        self.index += 1
 
     @_(r"\$\(.*?\)")
     def VARIABLE(self, t):

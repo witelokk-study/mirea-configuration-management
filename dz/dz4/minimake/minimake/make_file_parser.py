@@ -8,7 +8,6 @@ from .dataclasses.rule import Rule
 
 
 class MakefileParser(Parser):
-    # debugfile = 'parser.out'
     tokens = MakefileLexer.tokens
 
     @_("expr_list")
@@ -47,17 +46,17 @@ class MakefileParser(Parser):
     def var_assign(self, p):
         return Variable(p.ID, p.STRING)
 
-    @_("ID COL dependencies commands")
+    @_("ID COL dependencies NEW_LINE")
     def rule(self, p):
-        return Rule(p.ID, p.dependencies, p.commands)
+        return Rule(p.ID, p.dependencies, [])
 
-    @_("ID COL commands")
+    @_("ID COL commands NEW_LINE")
     def rule(self, p):
         return Rule(p.ID, [], p.commands)
 
-    @_("ID COL dependencies")
+    @_("ID COL dependencies commands NEW_LINE")
     def rule(self, p):
-        return Rule(p.ID, p.dependencies, [])
+        return Rule(p.ID, p.dependencies, p.commands)
 
     @_("ID")
     def dependencies(self, p):
