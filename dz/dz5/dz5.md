@@ -1,0 +1,54 @@
+# ДЗ №5. Визуализатор коммитов для git
+Описание: Разработать CLI-утилиту для выдачи информации по локальному git-репозиторию. Назначение утилиты – визуализатор графа изменений дерева (tree: файлы и папки) проекта с выводом в формате dot (graphviz).
+
+Данные извлекаются из папки .git без использования сторонних программ и библиотек. То есть нельзя из программы вызывать команды git для получения данных (например "git log" и "git cat-file"). Но можно и нужно пользоваться сведениями [отсюда](https://git-scm.com/book/ru/v2/Git-%D0%B8%D0%B7%D0%BD%D1%83%D1%82%D1%80%D0%B8-%D0%9E%D0%B1%D1%8A%D0%B5%D0%BA%D1%82%D1%8B-Git).
+
+Обязательно приведите примеры работы вашей утилиты.
+
+## Пример работы
+Программа запускается из корня git репозитория.
+
+Пример использования:
+```bash
+cd testgitrepo
+gitviz | dot -Tpng > out.png
+```
+
+![](testgitrepo.png)
+
+## Исходный код
+% Исходный код файла gitviz/gitviz/__main__.py
+
+```python gitviz/gitviz/__main__.py
+```
+
+% Исходный код файла gitviz/gitviz/blob.py
+
+```python gitviz/gitviz/blob.py
+```
+
+% Исходный код файла gitviz/gitviz/commit.py
+
+```python gitviz/gitviz/commit.py
+```
+
+% Исходный код файла gitviz/gitviz/tree.py
+
+```python gitviz/gitviz/tree.py
+```
+
+% Исходный код файла gitviz/gitviz/git.py
+
+```python gitviz/gitviz/git.py
+```
+
+% Исходный код файла gitviz/gitviz/gitviz.py
+
+```python gitviz/gitviz/gitviz.py
+```
+
+
+% Исходный код файла gitviz/pyproject.toml
+
+```toml gitviz/pyproject.toml
+```

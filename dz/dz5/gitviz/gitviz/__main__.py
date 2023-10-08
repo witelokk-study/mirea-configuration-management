@@ -4,9 +4,11 @@ from .gitviz import Gitviz
 
 
 def main():
-    gitviz = Gitviz(getcwd())
-    print(gitviz.get_dot())
-
+    try:
+        gitviz = Gitviz(getcwd())
+        print(gitviz.get_dot())
+    except RuntimeError as e:
+        print(e)
 
 if __name__ == "__main__":
     main()
